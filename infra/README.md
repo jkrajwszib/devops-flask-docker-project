@@ -1,16 +1,35 @@
-# Azure IaC (minimal)
+# Azure Infrastructure (IaC)
 
-Ten katalog zawiera minimalną infrastrukturę jako kod (Bicep) wymaganą w projekcie:
-- Resource Group (tworzona osobno komendą `az group create`)
-- Azure Container Registry (ACR) – tworzony przez `main.bicep`
+Ten katalog zawiera minimalny przykład Infrastructure as Code w Azure, przygotowany w Bicep.
 
-## Wymagania
-- Azure CLI (az)
-- Zalogowane konto: `az login`
+Celem jest demonstracja:
+- znajomości IaC,
+- umiejętności definiowania zasobów Azure,
+- integracji warstwy infrastruktury z projektem kontenerowym.
 
-## Kroki
+## Zawartość
 
-1. Utwórz Resource Group
+- `main.bicep` – definicja Azure Container Registry (ACR)
+- `parameters.json` – przykładowe parametry wdrożeniowe
+- `README.md` – opis infrastruktury
 
+## Opis infrastruktury
+
+Szablon `main.bicep` tworzy:
+- Azure Container Registry (ACR)
+
+Zasób ten może być wykorzystany do:
+- przechowywania obrazów Docker aplikacji,
+- integracji z pipeline CI/CD,
+- dalszej rozbudowy infrastruktury (np. AKS, App Service).
+
+## Deployment (opcjonalny)
+
+Wdrożenie wymaga aktywnej subskrypcji Azure.
+
+Przykładowe polecenie:
 ```bash
-az group create --name <RG_NAME> --location <LOCATION>
+az deployment group create \
+  --resource-group <resource-group-name> \
+  --template-file main.bicep \
+  --parameters @parameters.json
