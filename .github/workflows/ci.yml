@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Build stage: builder
+      - name: Build (builder stage)
+        run: docker build --target builder -t devops-flask:builder .
+
+      # Test stage: pytest must pass during build
+      - name: Build (test stage - runs pytest)
+        run: docker build --target test -t devops-flask:test .
+
+      # Final stage: production image
+      - name: Build (final stage)
+        run: docker build -t devops-flask:final .
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: python
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
